@@ -8,8 +8,7 @@ import threading
 from oauth2client.service_account import ServiceAccountCredentials
 
 bot: telebot.TeleBot = telebot.TeleBot(
-    # token='6380339604:AAFtOjqWgPX7zMIQ2nrBzuBIXR-3lF9gBI8'  # original bot
-    token='6426234952:AAFFW03vFQUvu5VYhamtGWwJuvIcfAJ72WM'  # test bot
+    token='6985065502:AAEbIeZQ7h9CBgj28O0deLbV-HYgKkDaAJE'
 )
 
 scope: List = [
@@ -21,9 +20,9 @@ creds = ServiceAccountCredentials.from_json_keyfile_name(
     'sheets_credentials.json', scope
 )
 gc = gspread.authorize(creds)
-spreadsheet = gc.open('surveyResponses')
+spreadsheet = gc.open('SamResto')
 sheet = spreadsheet.sheet1
-users_sheet = spreadsheet.get_worksheet(1)
+users_sheet = spreadsheet.get_worksheet(0)
 user_ids = users_sheet.col_values(1)[1:]
 
 reviews_list = []
@@ -34,12 +33,8 @@ def start(message):
     try:
         bot.send_message(
             message.chat.id,
-            text=f'☺️ Добро пожаловать в бот\n<b>La Esmeralda!</b>\n\n'
-                 f'Обратите внимание, что этот бот предназначен только для внутреннего использования, '
-                 f'и если у вас нет доступа, вы не сможете им воспользоваться.\n\n'
-                 f'🍱 Если вы хотите разместить заказ, пожалуйста, перейдите на наш веб-сайт, '
-                 f'или свяжитесь с нами по номеру\n📞 +998 99 - 661 44 44\n\n'
-                 f'❤️ Мы будем рады ответить на ваши вопросы и помочь вам.',
+            text=f'☺️ Добро пожаловать\n\n'
+                 f'Обратите внимание, что этот бот предназначен только для внутреннего использования, ',
             parse_mode='HTML'
         )
     except Exception as err:
@@ -51,16 +46,14 @@ def start(message):
         )
         time.sleep(1)
 
-
 @bot.message_handler(commands=['post'])
 def send_message(message):
     if message.chat.id == 368195441:
         new_review = message.text[6:]
         bot.send_message(
-            chat_id=-1001507264536,
+            chat_id=-1002114372557,
             text=new_review
         )
-
 
 def get_latest_record():
     try:
@@ -70,7 +63,6 @@ def get_latest_record():
         return None
     except Exception:
         return None
-
 
 def check_for_changes():
     latest_record = None
@@ -102,7 +94,7 @@ def check_for_changes():
                 )
 
                 bot.send_message(
-                    -1001507264536, # RESTAURANT ID
+                    -1002114372557, # RESTAURANT ID
                     text=f'<b>--- Новый отзыв в {new_time}---</b>\n\n'
                          f'{formatted_review}',
                     parse_mode='HTML'
